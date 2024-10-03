@@ -20,12 +20,12 @@ multiversx_sc_wasm_adapter::endpoints! {
     (
         init => init
         upgrade => upgrade
-        setFee => set_fee
         deposit => deposit
         withdraw => withdraw
-        fee => fee
-        getCollectedFees => collected_fees
-        getReserveForAddress => reserve_for_address
+        setFee => set_fee
+        get_fee => get_fee
+        getReserveForAddress => get_reserve_for_address
+        getCollectedFees => get_collected_fees
     )
 }
 

@@ -82,7 +82,7 @@ impl RustChallengeTest {
             .query()
             .to(CONTRACT_ADDRESS)
             .typed(rust_challenge_proxy::RustChallengeProxy)
-            .collected_fees()
+            .get_collected_fees()
             .returns(ReturnsResultUnmanaged)
             .run()
     }
@@ -92,7 +92,7 @@ impl RustChallengeTest {
             .query()
             .to(CONTRACT_ADDRESS)
             .typed(rust_challenge_proxy::RustChallengeProxy)
-            .reserve_for_address(address)
+            .get_reserve_for_address(address)
             .returns(ReturnsResultUnmanaged)
             .run()
     }
@@ -101,20 +101,7 @@ impl RustChallengeTest {
         self.world.check_account(address).balance(balance);
     }
 
-    // fn fail_set_fee_required()
 }
-
-// fn fail_set_fee_required() {
-
-//     world
-//         .tx()
-//         .from(OTHER_ADDRESS1)
-//         .to(CONTRACT_ADDRESS)
-//         .typed(rust_challenge_proxy::RustChallengeProxy)
-//         .set_fee(1u16)
-//         .with_result(ExpectError(4, "Endpoint can only be called by owner"))
-//         .run();
-// }
 
 #[test]
 fn test_deploy() {
@@ -242,4 +229,54 @@ fn test_withdraw_owner() {
     state.check_account(OWNER_ADDRESS, 5);
     assert_eq!(RustBigUint::ZERO, state.query_reserve_for_address(ADDRESS2));
     assert_eq!(RustBigUint::ZERO, state.query_collected_fees());
+}
+
+#[test]
+fn test_fail_set_fee() {
+    let mut state = RustChallengeTest::new();
+    state.deploy(1u32);
+    state
+        .world
+        .tx()
+        .from(ADDRESS1)
+        .to(CONTRACT_ADDRESS)
+        .typed(rust_challenge_proxy::RustChallengeProxy)
+        .set_fee(2u32)
+        .with_result(ExpectError(4, "Endpoint can only be called by owner"))
+        .run();
+}
+
+#[test]
+fn test_set_fee() {
+    let mut state = RustChallengeTest::new();
+    state.deploy(1u32);
+
+    state.deposit(ADDRESS1, RECEIVER_ADDRESS, 3);
+
+    state
+        .world
+        .tx()
+        .from(OWNER_ADDRESS)
+        .to(CONTRACT_ADDRESS)
+        .typed(rust_challenge_proxy::RustChallengeProxy)
+        .set_fee(2u32)
+        .run();
+
+    state.deposit(ADDRESS2, RECEIVER_ADDRESS, 4);
+    state.deposit(OWNER_ADDRESS, ADDRESS1, 3);
+
+    assert_eq!(RustBigUint::from(5u32), state.query_collected_fees());
+    assert_eq!(
+        RustBigUint::from(4u32),
+        state.query_reserve_for_address(RECEIVER_ADDRESS)
+    );
+    assert_eq!(
+        RustBigUint::from(1u32),
+        state.query_reserve_for_address(ADDRESS1)
+    );
+    assert_eq!(RustBigUint::ZERO, state.query_reserve_for_address(ADDRESS2));
+    state.check_account(OWNER_ADDRESS, 1);
+    state.check_account(ADDRESS1, 2);
+    state.check_account(ADDRESS2, 2);
+    state.check_account(RECEIVER_ADDRESS, 0);
 }

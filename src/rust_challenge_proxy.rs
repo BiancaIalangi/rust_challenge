@@ -85,19 +85,6 @@ where
     To: TxTo<Env>,
     Gas: TxGas<Env>,
 {
-    pub fn set_fee<
-        Arg0: ProxyArg<BigUint<Env::Api>>,
-    >(
-        self,
-        fee: Arg0,
-    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, ()> {
-        self.wrapped_tx
-            .payment(NotPayable)
-            .raw_call("setFee")
-            .argument(&fee)
-            .original_result()
-    }
-
     pub fn deposit<
         Arg0: ProxyArg<ManagedAddress<Env::Api>>,
     >(
@@ -119,25 +106,29 @@ where
             .original_result()
     }
 
-    pub fn fee(
+    pub fn set_fee<
+        Arg0: ProxyArg<BigUint<Env::Api>>,
+    >(
+        self,
+        fee: Arg0,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, ()> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("setFee")
+            .argument(&fee)
+            .original_result()
+    }
+
+    pub fn get_fee(
         self,
     ) -> TxTypedCall<Env, From, To, NotPayable, Gas, BigUint<Env::Api>> {
         self.wrapped_tx
             .payment(NotPayable)
-            .raw_call("fee")
+            .raw_call("get_fee")
             .original_result()
     }
 
-    pub fn collected_fees(
-        self,
-    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, BigUint<Env::Api>> {
-        self.wrapped_tx
-            .payment(NotPayable)
-            .raw_call("getCollectedFees")
-            .original_result()
-    }
-
-    pub fn reserve_for_address<
+    pub fn get_reserve_for_address<
         Arg0: ProxyArg<ManagedAddress<Env::Api>>,
     >(
         self,
@@ -147,6 +138,15 @@ where
             .payment(NotPayable)
             .raw_call("getReserveForAddress")
             .argument(&receiver)
+            .original_result()
+    }
+
+    pub fn get_collected_fees(
+        self,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, BigUint<Env::Api>> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("getCollectedFees")
             .original_result()
     }
 }
