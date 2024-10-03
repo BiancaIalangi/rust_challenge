@@ -7,7 +7,10 @@ pub mod rust_challenge_proxy;
 #[multiversx_sc::contract]
 pub trait RustChallenge {
     #[init]
-    fn init(&self) {}
+    fn init(&self, fee: BigUint) {
+        require!(fee > BigUint::zero(), "Fee should be positive");
+        self.set_fee(fee);
+    }
 
     #[only_owner]
     #[endpoint(setFee)]
@@ -36,6 +39,28 @@ pub trait RustChallenge {
         } else {
             self.reserve_for_address(&receiver)
                 .update(|current_reserve| *current_reserve += reserve);
+        }
+    }
+
+    #[endpoint]
+    fn withdraw(&self) {
+        let caller = self.blockchain().get_caller();
+        let owner = self.blockchain().get_owner_address();
+        if !owner.eq(&caller) {
+            require!(
+                !self.reserve_for_address(&caller).is_empty(),
+                "Nothing to claim"
+            );
+        }
+
+        let transfer_amount = self.reserve_for_address(&caller).get();
+        self.reserve_for_address(&caller).clear();
+        self.tx().to(&caller).egld(transfer_amount).transfer();
+
+        if owner.eq(&caller) {
+            let collected_fees = self.collected_fees().get();
+            self.collected_fees().clear();
+            self.tx().to(&caller).egld(collected_fees).transfer();
         }
     }
 

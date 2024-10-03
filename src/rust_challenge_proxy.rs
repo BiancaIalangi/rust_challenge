@@ -43,12 +43,16 @@ where
     From: TxFrom<Env>,
     Gas: TxGas<Env>,
 {
-    pub fn init(
+    pub fn init<
+        Arg0: ProxyArg<BigUint<Env::Api>>,
+    >(
         self,
+        fee: Arg0,
     ) -> TxTypedDeploy<Env, From, NotPayable, Gas, ()> {
         self.wrapped_tx
             .payment(NotPayable)
             .raw_deploy()
+            .argument(&fee)
             .original_result()
     }
 }
@@ -103,6 +107,15 @@ where
         self.wrapped_tx
             .raw_call("deposit")
             .argument(&receiver)
+            .original_result()
+    }
+
+    pub fn withdraw(
+        self,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, ()> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("withdraw")
             .original_result()
     }
 
