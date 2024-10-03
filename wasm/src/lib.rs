@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                            3
+// Endpoints:                            5
 // Async Callback (empty):               1
-// Total number of exported functions:   6
+// Total number of exported functions:   8
 
 #![no_std]
 
@@ -23,6 +23,8 @@ multiversx_sc_wasm_adapter::endpoints! {
         setFee => set_fee
         deposit => deposit
         fee => fee
+        getCollectedFees => collected_fees
+        getReserveForAddress => reserve_for_address
     )
 }
 
