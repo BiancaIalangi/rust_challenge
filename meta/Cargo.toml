@@ -1,0 +1,12 @@
+[package]
+name = "rust-challenge-meta"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[dependencies.rust-challenge]
+path = ".."
+
+[dependencies.multiversx-sc-meta-lib]
+version = "0.53.0"
+default-features = false

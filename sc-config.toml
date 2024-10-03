@@ -1,0 +1,2 @@
+[[proxy]]
+path = "src/rust_challenge_proxy.rs"
