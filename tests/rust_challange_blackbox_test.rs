@@ -100,7 +100,6 @@ impl RustChallengeTest {
     fn check_account(&mut self, address: TestAddress, balance: u64) {
         self.world.check_account(address).balance(balance);
     }
-
 }
 
 #[test]
@@ -252,6 +251,25 @@ fn test_set_fee() {
     state.deploy(1u32);
 
     state.deposit(ADDRESS1, RECEIVER_ADDRESS, 3);
+
+    state
+        .world
+        .tx()
+        .from(ADDRESS1)
+        .to(CONTRACT_ADDRESS)
+        .typed(rust_challenge_proxy::RustChallengeProxy)
+        .set_fee(2u32)
+        .with_result(ExpectError(4, "Endpoint can only be called by owner"))
+        .run();
+
+    state
+        .world
+        .tx()
+        .from(OWNER_ADDRESS)
+        .to(CONTRACT_ADDRESS)
+        .typed(rust_challenge_proxy::RustChallengeProxy)
+        .set_fee(0u32)
+        .run();
 
     state
         .world

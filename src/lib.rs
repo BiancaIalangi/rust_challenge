@@ -8,7 +8,7 @@ pub mod rust_challenge_proxy;
 pub trait RustChallenge {
     #[init]
     fn init(&self, fee: BigUint) {
-        require!(fee > BigUint::zero(), "Fee should be positive");
+        require!(fee >= BigUint::zero(), "Fee should be positive");
         self.set_fee(fee);
     }
 
