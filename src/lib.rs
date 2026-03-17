@@ -3,7 +3,6 @@
 use multiversx_sc::imports::*;
 pub mod rust_challenge_proxy;
 
-/// An empty contract. To be used as a template when starting a new contract from scratch.
 #[multiversx_sc::contract]
 pub trait RustChallenge {
     #[init]
@@ -15,7 +14,7 @@ pub trait RustChallenge {
     #[payable("EGLD")]
     #[endpoint]
     fn deposit(&self, receiver: ManagedAddress) {
-        let payment_amount = self.call_value().egld_value();
+        let payment_amount = self.call_value().egld();
         require!(
             *payment_amount > self.get_fee(),
             "Payments must be greater than fee"

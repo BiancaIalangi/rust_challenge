@@ -1,5 +1,5 @@
 {
-    "name": "empty",
+    "name": "rust_challenge",
     "steps": [
         {
             "step": "setState",
@@ -13,7 +13,7 @@
                 {
                     "creatorAddress": "address:owner",
                     "creatorNonce": "1",
-                    "newAddress": "sc:empty"
+                    "newAddress": "sc:rust_challenge"
                 }
             ]
         },
@@ -22,8 +22,8 @@
             "id": "deploy",
             "tx": {
                 "from": "address:owner",
-                "contractCode": "mxsc:../output/empty.mxsc.json",
-                "arguments": [],
+                "contractCode": "mxsc:../output/rust_challenge.mxsc.json",
+                "arguments": ["300000000000000000"],
                 "gasLimit": "5,000,000",
                 "gasPrice": "0"
             },

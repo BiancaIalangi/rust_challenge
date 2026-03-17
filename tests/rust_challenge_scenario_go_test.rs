@@ -5,6 +5,6 @@ fn world() -> ScenarioWorld {
 }
 
 #[test]
-fn empty_go() {
-    world().run("scenarios/empty.scen.json");
+fn rust_challenge_go() {
+    world().run("scenarios/rust_challenge.scen.json");
 }

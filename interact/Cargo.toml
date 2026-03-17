@@ -6,15 +6,23 @@ publish = false
 
 [[bin]]
 name = "basic-interact"
-path = "src/basic_interact.rs"
+path = "src/basic_interact_main.rs"
 
-[dependencies]
-clap = { version = "4.4.7", features = ["derive"] }
-serde = { version = "1.0", features = ["derive"] }
-toml = "0.8.6"
+[lib]
+path = "src/basic_interact.rs"
 
 [dependencies.rust-challenge]
 path = ".."
 
+[dependencies]
+clap = { version = "4.4", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+toml = "1.0"
+tokio = { version = "1.24" }
+serial_test = { version = "3.2.0" }
+
 [dependencies.multiversx-sc-snippets]
-version = "0.53.0"
+version = "0.65.0"
+
+[features]
+chain-simulator-tests = []
